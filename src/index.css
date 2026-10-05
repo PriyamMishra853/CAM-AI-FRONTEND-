@@ -1,0 +1,191 @@
+@import 'tailwindcss';
+
+/* ─── Design tokens ────────────────────────────────────────────────
+   void    #04070d  page
+   abyss   #0a1222  surfaces
+   panel   #0f1a30  raised surfaces
+   signal  #5be3ff  primary glow — the camera's "seeing" colour
+   tally   #ffb547  camera tally light — REC, attention, unconfirmed
+   ink     #e6eef8  text
+   mute    #8193ad  secondary text
+   ─────────────────────────────────────────────────────────────── */
+@theme {
+  --color-void: #04070d;
+  --color-abyss: #0a1222;
+  --color-panel: #0f1a30;
+  --color-signal: #5be3ff;
+  --color-signal-dim: #2a7f9e;
+  --color-tally: #ffb547;
+  --color-ink: #e6eef8;
+  --color-mute: #8193ad;
+  --color-line: rgb(120 170 220 / 0.14);
+  --color-line-strong: rgb(120 200 240 / 0.32);
+
+  --font-display: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --animate-blink: blink 1.2s steps(2, start) infinite;
+  --animate-dash: dash 1.4s linear infinite;
+  --animate-dash-slow: dash 3s linear infinite;
+  --animate-spin-slow: spin 40s linear infinite;
+  --animate-pulse-ring: pulse-ring 2.4s ease-out infinite;
+  --animate-grain: grain 0.6s steps(4) infinite;
+
+  @keyframes blink {
+    to {
+      visibility: hidden;
+    }
+  }
+  @keyframes dash {
+    to {
+      stroke-dashoffset: -24;
+    }
+  }
+  @keyframes grain {
+    0% {
+      transform: translate(0, 0);
+    }
+    25% {
+      transform: translate(-6%, 4%);
+    }
+    50% {
+      transform: translate(5%, -7%);
+    }
+    75% {
+      transform: translate(-3%, -4%);
+    }
+    100% {
+      transform: translate(4%, 6%);
+    }
+  }
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+  }
+}
+
+@layer base {
+  html {
+    background: var(--color-void);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--color-void);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: rgb(91 227 255 / 0.3);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 1.5px solid var(--color-signal);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  html.custom-cursor,
+  html.custom-cursor * {
+    cursor: none !important;
+  }
+  html.custom-cursor input,
+  html.custom-cursor textarea {
+    cursor: text !important;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
+}
+
+@layer components {
+  /* Wide, engineered display face — the voice of the system. */
+  .display {
+    font-family: var(--font-display);
+    font-stretch: 125%;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 0.92;
+    text-transform: uppercase;
+  }
+  .display-soft {
+    font-family: var(--font-display);
+    font-stretch: 100%;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+  /* Telemetry labels: what a camera or server would print. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-mute);
+  }
+  .telemetry {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--color-mute);
+  }
+  .glass {
+    background: linear-gradient(180deg, rgb(15 26 48 / 0.66), rgb(10 18 34 / 0.5));
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid var(--color-line);
+  }
+  .grid-bg {
+    background-image:
+      linear-gradient(rgb(120 170 220 / 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(120 170 220 / 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .grid-fade {
+    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  }
+  .glow-signal {
+    box-shadow:
+      0 0 0 1px rgb(91 227 255 / 0.35),
+      0 0 32px -4px rgb(91 227 255 / 0.45);
+  }
+  .text-glow {
+    text-shadow: 0 0 24px rgb(91 227 255 / 0.45);
+  }
+  /* Bracketed frame — four viewfinder corners via background gradients. */
+  .brackets {
+    --b: var(--color-line-strong);
+    --s: 14px;
+    background:
+      linear-gradient(var(--b), var(--b)) top left / var(--s) 1px no-repeat,
+      linear-gradient(var(--b), var(--b)) top left / 1px var(--s) no-repeat,
+      linear-gradient(var(--b), var(--b)) top right / var(--s) 1px no-repeat,
+      linear-gradient(var(--b), var(--b)) top right / 1px var(--s) no-repeat,
+      linear-gradient(var(--b), var(--b)) bottom left / var(--s) 1px no-repeat,
+      linear-gradient(var(--b), var(--b)) bottom left / 1px var(--s) no-repeat,
+      linear-gradient(var(--b), var(--b)) bottom right / var(--s) 1px no-repeat,
+      linear-gradient(var(--b), var(--b)) bottom right / 1px var(--s) no-repeat;
+  }
+  .scanlines {
+    background: repeating-linear-gradient(0deg, rgb(0 0 0 / 0.18) 0 1px, transparent 1px 3px);
+  }
+  .flow-line {
+    stroke-dasharray: 4 8;
+    animation: var(--animate-dash);
+  }
+}
